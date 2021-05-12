@@ -1,0 +1,9 @@
+XBE_TITLE = Pixelated
+GEN_XISO = $(XBE_TITLE).iso
+
+SRCS += main.c
+
+NXDK_DIR = /home/$(USER)/nxdk
+NXDK_SDL = y
+
+include $(NXDK_DIR)/Makefile

@@ -1,0 +1,7 @@
+*.d
+*exe
+*lib
+*obj
+/Pixelated.iso
+/cmake-build-debug/
+/bin/
