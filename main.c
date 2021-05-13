@@ -1,5 +1,5 @@
 /*
-Pixelated - a cross platform image viewer
+This file is part of Pixelated - a cross platform image viewer
 Copyright (C) 2021 Kosmas Raptis
 
 This program is free software; you can redistribute it and/or modify
