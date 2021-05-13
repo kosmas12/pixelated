@@ -3,7 +3,7 @@ project(Pixelated)
 set(CMAKE_C_STANDARD 11)
 find_package(SDL2 REQUIRED)
 
-set(SOURCE_FILES main.c)
+set(SOURCE_FILES main.c include/core.h include/core.c)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
@@ -50,3 +50,4 @@ else()
     # lots of warnings and all warnings as errors
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

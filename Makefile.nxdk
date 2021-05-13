@@ -2,8 +2,14 @@ XBE_TITLE = Pixelated
 GEN_XISO = $(XBE_TITLE).iso
 
 SRCS += main.c
+SRCS += include/core.c
 
 NXDK_DIR = /home/$(USER)/nxdk
 NXDK_SDL = y
 
+all_local: cp_resources all
+
 include $(NXDK_DIR)/Makefile
+
+cp_resources:
+	cp -r resources/ bin/

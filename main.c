@@ -17,52 +17,122 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <stdio.h>
-#if !defined(NXDK)
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#else
-#include <hal/debug.h>
-#include <hal/video.h>
-#include <SDL.h>
-#include <SDL_image.h>
-#define printf(...) debugPrint(__VA_ARGS__)
-#endif
-int Init() {
+#include "include/core.h"
 
-#if defined(NXDK)
-    XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
-#endif
+SDL_Texture *genWelcomeTex() {
+    SDL_Color color = {255, 255, 255, 255};
 
-    printf("Welcome to Pixelated! Initializing...");
-
-    int sdlflags = SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_GAMECONTROLLER;
-
-    if (SDL_Init(sdlflags) > 0) {
-        printf("Could not initialize SDL: %s", SDL_GetError());
-        return 0;
+    SDL_Surface *welcome = TTF_RenderUTF8_Blended(mediumFont, "Welcome to", color);
+    if (!welcome) {
+        printf("Couldn't draw welcome text: %s", SDL_GetError());
+        return NULL;
+    }
+    SDL_Texture *welcomeTexture = SDL_CreateTextureFromSurface(renderer, welcome);
+    if (!welcomeTexture) {
+        printf("Couldn't create welcome texture: %s", SDL_GetError());
+        return NULL;
     }
 
-
-#if defined (NXDK)
-    int imgflags = IMG_INIT_JPG|IMG_INIT_PNG;
-#else
-    int imgflags = IMG_INIT_JPG|IMG_INIT_PNG|IMG_INIT_TIF|IMG_INIT_WEBP;
-#endif
-
-    if (IMG_Init(imgflags) != imgflags) {
-        printf("Could not initialize SDL_image: %s", IMG_GetError());
-        SDL_Quit();
-        return 0;
-    }
-    return 1;
+    return welcomeTexture;
 }
 
-int main() {
+SDL_Texture *genNameTex() {
+    SDL_Color color = {255, 255, 255, 255};
 
+    SDL_Surface *pixelated = TTF_RenderUTF8_Blended(bigFont, "Pixelated", color);
+    if (!pixelated) {
+        printf("Couldn't draw name text: %s", SDL_GetError());
+        return NULL;
+    }
+
+    SDL_Texture *pixelatedTexture = SDL_CreateTextureFromSurface(renderer, pixelated);
+    if (!pixelatedTexture) {
+        printf("Couldn't create name texture: %s", SDL_GetError());
+        return NULL;
+    }
+
+    return pixelatedTexture;
+}
+
+SDL_Texture *genCopyrightTex() {
+    SDL_Color color = {255, 255, 255, 255};
+
+    SDL_Surface *copyright = TTF_RenderUTF8_Blended_Wrapped(mediumFont,
+                                                            "Copyright (C) 2021 Kosmas Raptis. "
+                                                            "Licensed under the GNU General Public License Version 2",
+                                                            color, 550);
+    if (!copyright) {
+        printf("Couldn't create copyright surface: %s", SDL_GetError());
+        return NULL;
+    }
+
+    SDL_Texture *copyrightTexture = SDL_CreateTextureFromSurface(renderer, copyright);
+    if (!copyrightTexture) {
+        printf("Couldn't create copyright texture: %s", SDL_GetError());
+        return NULL;
+    }
+
+    return copyrightTexture;
+}
+
+void displayStartupText() {
+    SDL_Rect welcomeCoords = {225, 70, 260, 60};
+    SDL_Texture *welcomeTex = genWelcomeTex();
+    if (!welcomeTex) {
+        Quit();
+    }
+
+    SDL_Rect nameCoords = {90, 120, 500, 150};
+    SDL_Texture *nameTex = genNameTex();
+    if (!nameTex) {
+        SDL_DestroyTexture(welcomeTex);
+        Quit();
+    }
+
+    SDL_Rect copyrightCoords = {10, 280, 550, 200};
+    SDL_Texture *copyrightTex = genCopyrightTex();
+    if (!copyrightTex) {
+        SDL_DestroyTexture(welcomeTex);
+        SDL_DestroyTexture(nameTex);
+        Quit();
+    }
+
+    for (int i = 0; i < 255; i += 5) {
+        SDL_SetTextureAlphaMod(welcomeTex, i);
+        SDL_SetTextureAlphaMod(nameTex, i);
+        SDL_SetTextureAlphaMod(copyrightTex, i);
+        SDL_RenderFillRect(renderer, NULL);
+        SDL_RenderCopy(renderer, welcomeTex, NULL, &welcomeCoords);
+        SDL_RenderCopy(renderer, nameTex, NULL, &nameCoords);
+        SDL_RenderCopy(renderer, copyrightTex, NULL, &copyrightCoords);
+        SDL_RenderPresent(renderer);
+    }
+
+    SDL_Delay(3000);
+
+    for (int i = 255; i >= 0; i -= 5) {
+        SDL_SetTextureAlphaMod(welcomeTex, i);
+        SDL_SetTextureAlphaMod(nameTex, i);
+        SDL_SetTextureAlphaMod(copyrightTex, i);
+        SDL_RenderFillRect(renderer, NULL);
+        SDL_RenderCopy(renderer, welcomeTex, NULL, &welcomeCoords);
+        SDL_RenderCopy(renderer, nameTex, NULL, &nameCoords);
+        SDL_RenderCopy(renderer, copyrightTex, NULL, &copyrightCoords);
+        SDL_RenderPresent(renderer);
+    }
+}
+
+
+int main() {
     if (!Init()) {
         exit(1);
     }
+
+    displayStartupText();
+
+    while (!checkIfQuit());
+
+    Quit();
 
     return 0;
 }
