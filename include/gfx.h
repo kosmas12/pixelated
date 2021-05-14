@@ -17,19 +17,19 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "include/core.h"
-#include "include/gfx.h"
+#ifndef PIXELATED_GFX_H
+#define PIXELATED_GFX_H
 
-int main() {
-    if (!Init()) {
-        exit(1);
-    }
+#if !defined(NXDK)
+#include <SDL2/SDL.h>
+#else
+#include <SDL.h>
+#endif
 
-    displayStartupText();
+void drawTexCoordsAlpha(SDL_Texture *texture, int alpha, SDL_Rect coords);
+SDL_Texture *genWelcomeTex();
+SDL_Texture *genNameTex();
+SDL_Texture *genCopyrightTex();
+void displayStartupText();
 
-    while (!checkIfQuit());
-
-    Quit();
-
-    return 0;
-}
+#endif //PIXELATED_GFX_H
