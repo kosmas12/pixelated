@@ -3,6 +3,8 @@ GEN_XISO = $(XBE_TITLE).iso
 
 SRCS += main.c
 SRCS += include/core.c
+SRCS += include/gfx.c
+SRCS += include/files_win32.c
 
 NXDK_DIR = /home/$(USER)/nxdk
 NXDK_SDL = y

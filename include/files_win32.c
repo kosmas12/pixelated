@@ -17,23 +17,36 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "include/core.h"
-#include "include/gfx.h"
-#include "include/files.h"
+#include "files.h"
+#if defined(NXDK)
+#include <hal/debug.h>
+#endif
+#include <windows.h>
+#include <malloc.h>
 
-int main() {
-    if (!Init()) {
-        exit(1);
+void initFiles() {
+    files = (char **) calloc(50, sizeof(char));
+}
+
+int listDir() {
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind;
+
+    hFind = FindFirstFile("D:\\*", &findFileData);
+    if (hFind == INVALID_HANDLE_VALUE) {
+        debugPrint("FindFirstHandle() failed!\n");
+        Sleep(5000);
+        return 0;
     }
 
-    displayStartupText();
+    int i = 0;
 
-    listDir();
-    drawDirListing();
+    do {
+        files[i] = findFileData.cFileName;
+        ++i;
+    } while (FindNextFile(hFind, &findFileData) != 0);
 
-    while (!checkIfQuit());
+    return 1;
 
-    Quit();
-
-    return 0;
 }
+

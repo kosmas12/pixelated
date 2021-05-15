@@ -17,23 +17,29 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "include/core.h"
-#include "include/gfx.h"
-#include "include/files.h"
+#include "files.h"
+#include <stdio.h>
+#include <dirent.h>
+#include <malloc.h>
 
-int main() {
-    if (!Init()) {
-        exit(1);
+void initFiles() {
+    files = (char **) calloc(50, sizeof(char));
+}
+
+int listDir() {
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir ("./")) != NULL) {
+        int i = 0;
+        /* print all the files and directories within directory */
+        while ((ent = readdir (dir)) != NULL) {
+            files[i] = ent->d_name;
+            ++i;
+        }
+        closedir (dir);
+    } else {
+        /* could not open directory */
+        perror ("");
+        return 0;
     }
-
-    displayStartupText();
-
-    listDir();
-    drawDirListing();
-
-    while (!checkIfQuit());
-
-    Quit();
-
-    return 0;
 }

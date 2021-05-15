@@ -31,5 +31,6 @@ SDL_Texture *genWelcomeTex();
 SDL_Texture *genNameTex();
 SDL_Texture *genCopyrightTex();
 void displayStartupText();
+void drawDirListing();
 
 #endif //PIXELATED_GFX_H

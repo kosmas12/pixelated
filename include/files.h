@@ -17,23 +17,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "include/core.h"
-#include "include/gfx.h"
-#include "include/files.h"
+#ifndef PIXELATED_FILES_H
+#define PIXELATED_FILES_H
 
-int main() {
-    if (!Init()) {
-        exit(1);
-    }
+char *curPath;
+char *selected;
+char **files;
 
-    displayStartupText();
+void initFiles();
+int listDir();
+/* int enterDir();
+int stepBack();
+int confirm();
+int refreshDir(); */
 
-    listDir();
-    drawDirListing();
-
-    while (!checkIfQuit());
-
-    Quit();
-
-    return 0;
-}
+#endif //PIXELATED_FILES_H

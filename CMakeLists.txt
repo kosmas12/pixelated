@@ -3,7 +3,13 @@ project(Pixelated)
 set(CMAKE_C_STANDARD 11)
 find_package(SDL2 REQUIRED)
 
-set(SOURCE_FILES main.c include/core.h include/core.c include/gfx.c include/gfx.h)
+set(SOURCE_FILES main.c include/core.c include/gfx.c)
+
+if(WIN32)
+    set(SOURCE_FILES ${SOURCE_FILES} include/files_win32.c)
+else()
+    set(SOURCE_FILES ${SOURCE_FILES} include/files.c)
+endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 

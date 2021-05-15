@@ -19,6 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "gfx.h"
 #include "core.h"
+#include "files.h"
 
 void drawTexCoordsAlpha(SDL_Texture *texture, int alpha, SDL_Rect coords) {
     SDL_SetTextureAlphaMod(texture, alpha);
@@ -126,4 +127,33 @@ void displayStartupText() {
         drawTexCoordsAlpha(copyrightTex, i, copyrightCoords);
         SDL_RenderPresent(renderer);
     }
+}
+
+void drawDirListing() {
+    SDL_Rect curCoords;
+    curCoords.x = 0;
+    curCoords.y = 0;
+
+    SDL_Color textColor = {255, 255, 255, 255};
+
+    int i = 0;
+
+    SDL_Surface *file;
+    SDL_Texture *fileTex;
+
+
+    while (files[i] != NULL) {
+        file = TTF_RenderUTF8_Blended(smallFont, files[i], textColor);
+        curCoords.w = file->w;
+        curCoords.h = file->h;
+        fileTex = SDL_CreateTextureFromSurface(renderer, file);
+        SDL_FreeSurface(file);
+        SDL_RenderCopy(renderer, fileTex, NULL, &curCoords);
+        SDL_DestroyTexture(fileTex);
+        curCoords.y += 35;
+        ++i;
+    }
+
+    SDL_RenderPresent(renderer);
+
 }

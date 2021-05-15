@@ -18,6 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 */
 
 #include "core.h"
+#include "files.h"
 
 int initLibs() {
     int sdlflags = SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_GAMECONTROLLER;
